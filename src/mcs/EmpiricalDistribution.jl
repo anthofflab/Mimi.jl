@@ -17,8 +17,8 @@ struct EmpiricalDistribution{T} <: PseudoDistribution
     function EmpiricalDistribution(values::Vector{T}, probs::Union{Nothing, Vector{Float64}}=nothing) where T
         n = length(values)
         if probs === nothing
-            probs = Vector{Float64}(n)
-            probs[:] = 1/n
+            probs = Vector{Float64}(undef, n)
+            probs[:] .= 1/n
         elseif length(probs) != n
             error("Vectors of values and probabilities must be equal lengths")
         end

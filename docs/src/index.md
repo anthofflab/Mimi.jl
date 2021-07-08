@@ -17,6 +17,12 @@ We aim to assist users of all different experience levels, starting with first-t
 
 The **first step** for any user includes installation of julia and Mimi, as well as optionally adding the Mimi Registry. See [Tutorial 1: Install Mimi](@ref) for instructions on these tasks.
 
+As we work to enhance and improve Mimi we will release new versions of the package. To make sure you always have the latest version of Mimi installed, we recommend that on occasion you run the `update` command at the julia Pkg REPL. This will update *all* installed packages to their latest version (not just the Mimi package). To *only* update the Mimi package you may run the following, although we recommend you do a comprehensive update each time as indicated above. See [Tutorial 1: Install Mimi](@ref) for more!
+
+```julia
+pkg> update Mimi
+```
+
 Finally, when in doubt, ask your question on the [Mimi Framework forum](https://forum.mimiframework.org) or post an [Issue](https://github.com/mimiframework/Mimi.jl/issues) to the Github repository, the latter being especially pertintent if you have a specific request for the development team.   Don't be shy about either option, we would much prefer to be inundated with lots of questions and help people out than people give up on Mimi!
 
 ## Models using Mimi
