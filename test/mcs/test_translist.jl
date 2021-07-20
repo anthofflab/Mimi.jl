@@ -102,6 +102,37 @@ add_comp!(m2, test2)
 
 run(sd, [m1, m2], 100)
 
+#------------------------------------------------------------------------------
+# Test warning for compname.paramname syntax in a shared parameter case
+
+# shared parameter 
+m = Model()
+set_dimension!(m, :time, 2000:10:2050)
+add_comp!(m, test1) # test1.p is unshared with default of 5
+add_comp!(m, test2) # test2.p is unshared with default of 5
+add_shared_param!(m, :model_p, 6) 
+connect_param!(m, :test1, :p, :model_p)
+# now test1.p is shared, connected to model_p with a value of 6, test2.p is still unshared
+
+sd = @defsim begin
+    sampling(LHSData)
+    test2.p = Normal(0, 1)
+end
+run(sd, m, 2) # no warnings
+
+sd = @defsim begin
+    sampling(LHSData)
+    test1.p = Normal(0, 1)
+end
+msg = "Parameter indicated in `defsim` as test1.p is connected to a SHARED parameter model_p. Thus the value will be varied in all component parameters connected to that shared model parameter.  We suggest using model_p = distribution syntax to be transparent about this."
+@test_logs (:warn, msg) run(sd, m, 2) #should work but warn 
+
+sd = @defsim begin
+    sampling(LHSData)
+    p = Normal(0, 1)
+end
+@test_throws ErrorException run(sd, m, 2) #should error, can't resolve
+
 ##
 ## Tests for set_translist_modelparams with a default (not shared)
 ##

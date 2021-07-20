@@ -743,7 +743,18 @@ function set_translist_modelparams!(sim_inst::SimulationInstance{T}) where T <: 
                 # check for component in the model
                 compname in keys(components(m.md)) || error("Component $compname does not exist in $(flat_model_list_names[model_idx]).")
 
-                model_parameters_vec[model_idx] = get_model_param_name(m.md, compname, trans.paramname)
+                model_param_name = get_model_param_name(m.md, compname, trans.paramname)
+                
+                # if this is a shared parameter the user should use syntax without 
+                # compname in it, although this could warn or error
+                if is_shared(model_param(m.md, model_param_name))
+                    @warn string("Parameter indicated in `defsim` as $compname.$(trans.paramname) ",
+                            "is connected to a SHARED parameter $model_param_name. Thus the ",
+                            "value will be varied in all component parameters connected to ",
+                            "that shared model parameter.  We suggest using $model_param_name = distribution ",
+                            "syntax to be transparent about this.")
+                end
+                model_parameters_vec[model_idx] = model_param_name
             end
 
         # no component, so this should be referring to a shared parameter ... but 
